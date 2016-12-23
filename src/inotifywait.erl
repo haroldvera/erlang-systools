@@ -180,18 +180,18 @@ parse_options(Args, [ Option | Tail ]) ->
                throw(bad_option)
     end.
 
-parse_options_events(Events) -> 
+
+parse_options_events(Events) ->
     Allowed = [ access, modify, attrib, close_write, close_nowrite, close, open,
-                moved_to, moved_from, move_self, create, delete, delete_self,
-                unmount ],
+        moved_to, moved_from, move_self, create, delete, delete_self,
+        unmount ],
     SEvents = lists:usort(Events),
     case lists:filter(fun(E) -> lists:member(E, Allowed) end, SEvents) of
-        [] -> string:join([ atom_to_list(E) || E <- SEvents ], ",");
-        List ->
-            error_logger:error_msg("Inotify events not supported: ~w~n", [ List ]),
-            erlang:error(badarg, Events)
+        [] ->
+            error_logger:error_msg("Inotify events not supported: wn", [ Events ]),
+            erlang:error(badarg, Events);
+        _ -> string:join([ atom_to_list(E) || E <- Events ], ",")
     end.
-
 %% ---------------------------------------------------------------------------
 %% Launch an external inotifywait process through a port.
 %% Some shell trick is used to get the real (os) pid to be able to end the
